@@ -17,5 +17,3 @@ ADD server.conf /etc/nginx/conf.d/default.conf
 RUN mkdir -p /run/nginx
 WORKDIR /app
 COPY ./script/. .
-EXPOSE 8080
-CMD ["./start.sh"]

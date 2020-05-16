@@ -21,9 +21,9 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/gcp/credentials.json
             - name: WEB_PORT
-              value: 80
+              value: "80"
             - name: GRPC_PORT
-              value: 4000
+              value: "4000"
             - name: TZ
               value: Asia/Tokyo
           volumeMounts:
@@ -39,6 +39,32 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: 50m
+        - name: grpcui-container
+          image: gcr.io/akiho-playground/grpcui:latest
+          command: ["./start.sh"]
+          env:
+            - name: GRPC_WEB_SERVER
+              value: localhost:80
+            - name: GRPC_SERVER
+              value: localhost:4000
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: 50m
       volumes:
         - name: gcp-credentials
           secret:
@@ -52,10 +78,14 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: "grpc-web-port"
+    - name: "api-port"
       protocol: "TCP"
       port: 80
       targetPort: 80
+    - name: "debug-port"
+      protocol: "TCP"
+      port: 8080
+      targetPort: 8080
   selector:
     app: api
 
@@ -70,3 +100,15 @@ spec:
   backend:
     serviceName: api-node-port
     servicePort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: api-debug-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: api-debug-ip
+spec:
+  backend:
+    serviceName: api-node-port
+    servicePort: 8080
