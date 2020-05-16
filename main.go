@@ -1,13 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -15,6 +18,12 @@ import (
 )
 
 func main() {
+	log.Println("start process")
+
+	if err := loadEnv(); err != nil {
+		panic(err)
+	}
+
 	interceptor := func(
 		ctx context.Context,
 		req interface{},
@@ -33,6 +42,30 @@ func main() {
 
 	runGRPCServer(server)
 	runGRPCWebServer(server)
+}
+
+func loadEnv() error {
+	dotenvBody := os.Getenv("DOTENV_BODY")
+	if len(dotenvBody) > 0 {
+		envMap, err := godotenv.Parse(bytes.NewBufferString(dotenvBody))
+		if err != nil {
+			return err
+		}
+		for k, v := range envMap {
+			if err := os.Setenv(k, v); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	if envPath := os.Getenv("GO_ENV"); len(envPath) > 0 {
+		if err := godotenv.Overload(envPath); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func runGRPCServer(server *grpc.Server) {
@@ -87,7 +120,18 @@ type hello struct {
 }
 
 func (s *hello) World(ctx context.Context, req *pb.Empty) (*pb.HelloWorld, error) {
+	username := os.Getenv("SECRET_USERNAME")
+	password := os.Getenv("SECRET_PASSWORD")
+
+	log.Println(username)
+	log.Println(password)
+
+	msg1 := os.Getenv("MESSAGE_1")
+	msg2 := os.Getenv("MESSAGE_2")
+
+	msg := fmt.Sprintf("%s %s from env", msg1, msg2)
+
 	return &pb.HelloWorld{
-		Message: "hello world",
+		Message: msg,
 	}, nil
 }

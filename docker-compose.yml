@@ -18,7 +18,7 @@ services:
     command:
       - "sh"
       - "-c"
-      - "go run /app/main.go"
+      - "GO_ENV=/app/env go run /app/main.go"
     ports:
       - "3000:80"
       - "4000:4000"
