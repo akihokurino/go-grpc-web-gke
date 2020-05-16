@@ -1,0 +1,5 @@
+.mod
+.vscode
+proto/go
+main
+gcp-service.json
