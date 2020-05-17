@@ -5,6 +5,7 @@ VER=${VER:-local-$(date +%Y%m%d%H%M)}
 PROJECT=akiho-playground
 CLUSTER=grpc-k8s-sample
 API_IMAGE=gcr.io/${PROJECT}/api:${VER}
+WEB_IMAGE=gcr.io/${PROJECT}/web:${VER}
 
 gcloud container clusters get-credentials ${CLUSTER} --zone=asia-northeast1-a
 
@@ -13,6 +14,11 @@ kubectl create secret generic api-env --from-file=env=${APP_ROOT}/env
 
 docker build -t ${API_IMAGE} --target deploy .
 gcloud docker -- push ${API_IMAGE}
+
+cd ${APP_ROOT}/web
+docker build -t ${WEB_IMAGE} --target deploy .
+gcloud docker -- push ${WEB_IMAGE}
+cd ../
 
 cat k8s.yml | sed 's/\${VER}'"/${VER}/g" | kubectl apply -f -
 

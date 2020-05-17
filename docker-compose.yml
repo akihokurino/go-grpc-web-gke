@@ -47,3 +47,25 @@ services:
     environment:
       - GRPC_WEB_SERVER=app:80
       - GRPC_SERVER=app:4000
+
+  web:
+    init: true
+    build:
+      context: web/.
+      dockerfile: Dockerfile
+      target: local-dev
+    image: grpc-k8s-sample-web-local:latest
+    volumes:
+      - ./web/.:/app
+    working_dir: /app
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - SYS_PTRACE
+    command:
+      - "sh"
+      - "-c"
+      - "npm start"
+    tty: true
+    ports:
+      - "3030:3000"

@@ -4,3 +4,5 @@ proto/go
 main
 gcp-service.json
 env
+
+node_modules

@@ -89,6 +89,42 @@ spec:
             secretName: api-env
 
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web-container
+          image: gcr.io/akiho-playground/web:${VER}
+          command:
+            - nginx
+            - -g
+            - "daemon off;"
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: 50m
+
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -106,6 +142,21 @@ spec:
       targetPort: 8080
   selector:
     app: api
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-node-port
+spec:
+  type: NodePort
+  ports:
+    - name: "web-port"
+      protocol: "TCP"
+      port: 80
+      targetPort: 80
+  selector:
+    app: web
 
 ---
 apiVersion: extensions/v1beta1
@@ -130,6 +181,18 @@ spec:
   backend:
     serviceName: api-node-port
     servicePort: 8080
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: web-ip
+spec:
+  backend:
+    serviceName: web-node-port
+    servicePort: 80
 
 ---
 apiVersion: v1
