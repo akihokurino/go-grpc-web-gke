@@ -21,3 +21,6 @@ protoc --proto_path=${APP_ROOT}/proto/. \
        --js_out=import_style=commonjs,binary:${TS_DIST} \
        --ts_out=service=grpc-web:${TS_DIST} \
        ${APP_ROOT}/proto/*.proto
+
+find ${TS_DIST} -type f -name "*_pb.js" | xargs gsed -i -e "1i /* eslint-disable */"
+find ${TS_DIST} -type f -name "*_pb_service.js" | xargs gsed -i -e "1i /* eslint-disable */"
