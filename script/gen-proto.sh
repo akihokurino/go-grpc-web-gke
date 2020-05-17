@@ -5,7 +5,7 @@ GO_DIST=${APP_ROOT}/proto/go
 TS_DIST=${APP_ROOT}/web/src/rpc
 
 rm -f ${GO_DIST}/*
-mkdir -p ${GO_DIST}
+mkdir -p ${TS_DIST}
 
 rm -f ${TS_DIST}/*
 mkdir -p ${TS_DIST}
