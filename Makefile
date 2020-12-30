@@ -1,5 +1,9 @@
+MAKEFLAGS=--no-builtin-rules --no-builtin-variables --always-make
+ROOT := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+export PATH := $(ROOT)/script:$(PATH)
+
 gen:
-	./script/gen-proto.sh
+	gen-proto.sh
 
 build:
 	go run main.go
@@ -10,8 +14,14 @@ run-local:
 run-debug:
 	grpcui -plaintext -port 4040 localhost:4000
 
+run-batch:
+	docker-compose run --rm batch go run /app/main.go batch
+
+setup-k8s:
+	setup-k8s.sh
+
 deploy:
-	./script/deploy.sh
+	deploy.sh
 
 deploy-grpcui:
-	./script/deploy-grpcui.sh
+	deploy-grpcui.sh

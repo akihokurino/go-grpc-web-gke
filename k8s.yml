@@ -16,7 +16,7 @@ spec:
       containers:
         - name: api-container
           image: gcr.io/akiho-playground/api:${VER}
-          command: ["./main"]
+          command: ["./main", "api"]
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/gcp/credentials.json
@@ -164,7 +164,7 @@ kind: Ingress
 metadata:
   name: api-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: api-ip
+    kubernetes.io/ingress.global-static-ip-name: gke-grpc-sample-api-ip
 spec:
   backend:
     serviceName: api-node-port
@@ -176,7 +176,7 @@ kind: Ingress
 metadata:
   name: api-debug-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: api-debug-ip
+    kubernetes.io/ingress.global-static-ip-name: gke-grpc-sample-api-debug-ip
 spec:
   backend:
     serviceName: api-node-port
@@ -188,7 +188,7 @@ kind: Ingress
 metadata:
   name: web-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: web-ip
+    kubernetes.io/ingress.global-static-ip-name: gke-grpc-sample-web-ip
 spec:
   backend:
     serviceName: web-node-port

@@ -11,6 +11,7 @@ import (
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/joho/godotenv"
+	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -24,24 +25,51 @@ func main() {
 		panic(err)
 	}
 
-	interceptor := func(
-		ctx context.Context,
-		req interface{},
-		info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler) (resp interface{}, err error) {
-		res, err := handler(ctx, req)
-		if err != nil {
-			log.Printf("error %s", err.Error())
-		}
-		return res, err
+	api := &cobra.Command{
+		Use:   "api",
+		Short: "",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			interceptor := func(
+				ctx context.Context,
+				req interface{},
+				info *grpc.UnaryServerInfo,
+				handler grpc.UnaryHandler) (resp interface{}, err error) {
+				res, err := handler(ctx, req)
+				if err != nil {
+					log.Printf("error %s", err.Error())
+				}
+				return res, err
+			}
+
+			server := grpc.NewServer(grpc.UnaryInterceptor(interceptor))
+			pb.RegisterHelloServer(server, &hello{})
+			reflection.Register(server)
+
+			runGRPCServer(server)
+			runGRPCWebServer(server)
+
+			return nil
+		},
 	}
 
-	server := grpc.NewServer(grpc.UnaryInterceptor(interceptor))
-	pb.RegisterHelloServer(server, &hello{})
-	reflection.Register(server)
+	batch := &cobra.Command{
+		Use:   "batch",
+		Short: "",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fmt.Printf("hello batch, %s from env", os.Getenv("MESSAGE"))
+			return nil
+		},
+	}
 
-	runGRPCServer(server)
-	runGRPCWebServer(server)
+	cmd := &cobra.Command{
+		Use:   "grpc-sample",
+		Short: "",
+	}
+
+	cmd.AddCommand(api, batch)
+	if err := cmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
 
 func loadEnv() error {
@@ -126,10 +154,7 @@ func (s *hello) World(ctx context.Context, req *pb.Empty) (*pb.HelloWorld, error
 	log.Println(username)
 	log.Println(password)
 
-	msg1 := os.Getenv("MESSAGE_1")
-	msg2 := os.Getenv("MESSAGE_2")
-
-	msg := fmt.Sprintf("%s %s from env", msg1, msg2)
+	msg := fmt.Sprintf("hello, %s from env", os.Getenv("MESSAGE"))
 
 	return &pb.HelloWorld{
 		Message: msg,
