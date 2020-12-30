@@ -195,6 +195,54 @@ spec:
     servicePort: 80
 
 ---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 1
+      template:
+        metadata:
+          name: hello
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: batch-container
+              image: gcr.io/akiho-playground/batch:${VER}
+              command: ["./main", "batch"]
+              env:
+                - name: GOOGLE_APPLICATION_CREDENTIALS
+                  value: /var/secrets/gcp/credentials.json
+                - name: TZ
+                  value: Asia/Tokyo
+                - name: GO_ENV
+                  value: /var/secrets/env
+              volumeMounts:
+                - name: gcp-credentials
+                  mountPath: /var/secrets/gcp
+                  readOnly: true
+                - name: api-env
+                  mountPath: /var/secrets
+                  readOnly: true
+          volumes:
+            - name: gcp-credentials
+              secret:
+                secretName: gcp-credentials
+            - name: api-env
+              secret:
+                secretName: api-env
+
+---
 apiVersion: v1
 kind: Secret
 metadata:

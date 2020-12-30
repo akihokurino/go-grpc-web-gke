@@ -6,8 +6,9 @@ IMAGE=gcr.io/${PROJECT}/grpcui:latest
 
 cd ${APP_ROOT}/grpcui
 
-docker build -t ${IMAGE} --target deploy .
 docker login -u oauth2accesstoken -p "$(gcloud auth print-access-token)" https://gcr.io
+
+docker build -t ${IMAGE} --target deploy .
 docker push ${IMAGE}
 
 docker rmi -f `docker images | grep "gcr.io/${PROJECT}" | awk '{print $3}'`
