@@ -2,7 +2,7 @@
 
 APP_ROOT=$(dirname $0)/..
 PROJECT=akiho-playground
-IMAGE=gcr.io/${PROJECT}/grpcui:latest
+IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-grpcui:latest
 
 cd ${APP_ROOT}/grpcui
 

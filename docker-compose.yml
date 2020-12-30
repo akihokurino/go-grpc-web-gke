@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: local-dev
-    image: grpc-k8s-sample-local:latest
+    image: gke-grpc-sample-local:latest
     volumes:
       - .:/app
       - .mod:/go/pkg/mod
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: local-dev
-    image: grpc-k8s-sample-batch-local:latest
+    image: gke-grpc-sample-batch-local:latest
     volumes:
       - .:/app
       - .mod:/go/pkg/mod
@@ -47,7 +47,7 @@ services:
       context: grpcui/.
       dockerfile: Dockerfile
       target: local-dev
-    image: grpcui-local:latest
+    image: gke-grpc-sample-grpcui-local:latest
     volumes:
       - ./grpcui/script/.:/app
       - .mod:/go/pkg/mod
@@ -69,7 +69,7 @@ services:
       context: web/.
       dockerfile: Dockerfile
       target: local-dev
-    image: grpc-k8s-sample-web-local:latest
+    image: gke-grpc-sample-web-local:latest
     volumes:
       - ./web/.:/app
     working_dir: /app

@@ -4,9 +4,9 @@ APP_ROOT=$(dirname $0)/..
 
 export VER=${VER:-local-$(date +%Y%m%d%H%M)}
 PROJECT=akiho-playground
-API_IMAGE=gcr.io/${PROJECT}/api:${VER}
-BATCH_IMAGE=gcr.io/${PROJECT}/batch:${VER}
-WEB_IMAGE=gcr.io/${PROJECT}/web:${VER}
+API_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-api:${VER}
+BATCH_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-batch:${VER}
+WEB_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-web:${VER}
 
 gcloud container clusters get-credentials gke-grpc-sample --zone=asia-northeast1-a
 

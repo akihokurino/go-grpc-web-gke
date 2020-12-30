@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: api-container
-          image: gcr.io/akiho-playground/api:${VER}
+          image: gcr.io/akiho-playground/gke-grpc-sample-api:${VER}
           command: ["./main", "api"]
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -60,7 +60,7 @@ spec:
             requests:
               cpu: 30m
         - name: grpcui-container
-          image: gcr.io/akiho-playground/grpcui:latest
+          image: gcr.io/akiho-playground/gke-grpc-sample-grpcui:latest
           command: ["./start.sh"]
           env:
             - name: GRPC_WEB_SERVER
@@ -105,7 +105,7 @@ spec:
     spec:
       containers:
         - name: web-container
-          image: gcr.io/akiho-playground/web:${VER}
+          image: gcr.io/akiho-playground/gke-grpc-sample-web:${VER}
           command:
             - nginx
             - -g
@@ -218,7 +218,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: batch-container
-              image: gcr.io/akiho-playground/batch:${VER}
+              image: gcr.io/akiho-playground/gke-grpc-sample-batch:${VER}
               command: ["./main", "batch"]
               env:
                 - name: GOOGLE_APPLICATION_CREDENTIALS
