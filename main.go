@@ -56,7 +56,7 @@ func main() {
 		Use:   "batch",
 		Short: "",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf("hello batch, %s from env", os.Getenv("MESSAGE"))
+			fmt.Printf("hello cicd batch, %s from env", os.Getenv("MESSAGE"))
 			return nil
 		},
 	}
@@ -154,7 +154,7 @@ func (s *hello) World(ctx context.Context, req *pb.Empty) (*pb.HelloWorld, error
 	log.Println(username)
 	log.Println(password)
 
-	msg := fmt.Sprintf("hello, %s from env", os.Getenv("MESSAGE"))
+	msg := fmt.Sprintf("hello cicd, %s from env, %s", os.Getenv("MESSAGE"), username)
 
 	return &pb.HelloWorld{
 		Message: msg,

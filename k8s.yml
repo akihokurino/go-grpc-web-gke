@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: api-container
-          image: gcr.io/akiho-playground/gke-grpc-sample-api:${VER}
+          image: gcr.io/akiho-playground/gke-grpc-sample-server:${VER}
           command: ["./main", "api"]
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -218,7 +218,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: batch-container
-              image: gcr.io/akiho-playground/gke-grpc-sample-batch:${VER}
+              image: gcr.io/akiho-playground/gke-grpc-sample-server:${VER}
               command: ["./main", "batch"]
               env:
                 - name: GOOGLE_APPLICATION_CREDENTIALS

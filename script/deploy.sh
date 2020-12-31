@@ -4,8 +4,7 @@ APP_ROOT=$(dirname $0)/..
 
 export VER=${VER:-local-$(date +%Y%m%d%H%M)}
 PROJECT=akiho-playground
-API_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-api:${VER}
-BATCH_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-batch:${VER}
+SERVER_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-server:${VER}
 WEB_IMAGE=gcr.io/${PROJECT}/gke-grpc-sample-web:${VER}
 
 gcloud container clusters get-credentials gke-grpc-sample --zone=asia-northeast1-a
@@ -16,12 +15,8 @@ kubectl create secret generic api-env --from-file=env=${APP_ROOT}/env
 
 docker login -u oauth2accesstoken -p "$(gcloud auth print-access-token)" https://gcr.io
 
-docker build -t ${API_IMAGE} --target deploy .
-docker push ${API_IMAGE}
-
-docker tag ${API_IMAGE} ${BATCH_IMAGE}
-docker push ${BATCH_IMAGE}
-
+docker build -t ${SERVER_IMAGE} --target deploy .
+docker push ${SERVER_IMAGE}
 
 cd ${APP_ROOT}/web
 docker build -t ${WEB_IMAGE} --target deploy .
