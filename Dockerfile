@@ -11,7 +11,7 @@ RUN go get github.com/go-delve/delve/cmd/dlv \
 FROM builder-base as builder
 WORKDIR /app
 COPY . .
-RUN go build main.go
+RUN make gen && go build main.go
 
 FROM alpine as deploy
 RUN apk update && apk add --no-cache tzdata
