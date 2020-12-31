@@ -5,6 +5,9 @@ export PATH := $(ROOT)/script:$(PATH)
 gen:
 	gen-proto.sh
 
+gen-client:
+	gen-proto-client.sh
+
 build:
 	go run main.go
 
