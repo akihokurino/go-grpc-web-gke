@@ -1,8 +1,5 @@
-# gke-grpc-sample
-
-## 構成
+## Specs
 - go 1.14
-- cobra
-- grpc-web
-https://github.com/improbable-eng/grpc-web
+- cobra（ https://github.com/spf13/cobra ）
+- grpc-web（ https://github.com/improbable-eng/grpc-web ）
 - k8s
